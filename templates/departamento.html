@@ -10,28 +10,68 @@
     <link href="../css/estilo.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
 
+    <style>
+        body {
+            background-color: #131A29;
+            color: white;
+        }
+
+        .btn-info {
+            background-color: #4caf83;
+            color: #131A29;
+            border-color: #90d082;
+        }
+
+        .btn-secondary {
+            background-color: #5a5a5a;
+            color: white;
+            border-color: #6c757d;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        input.form-control, select.form-select {
+            background-color: #131A29 !important;
+            color: white !important;
+            border-color: #4A4E51 !important;
+        }
+
+        input.form-control:focus, select.form-select:focus {
+            background-color: #131A29 !important;
+            color: white !important;
+            border-color: #4caf83 !important;
+        }
+
+        h3 {
+            color: #4caf83;
+        }
+    </style>
 </head>
 
 <body class="d-flex flex-column h-100">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <main class="flex-shrink-0">
         <div class="container">
             <h3 class="my-3">Agregar Departamento</h3>
 
             <form action="/nuevo_departamento" method="post" class="row g-3" autocomplete="off">
                 {% if success_message %}
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            toastr.options = {
-                                "closeButton": true,
-                                "progressBar": true,
-                                "positionClass": "toast-top-right",
-                                "timeOut": "5000"
-                            };
-                            toastr.success("{{ success_message }}");
-                        });
-                    </script>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        toastr.options = {
+                            "closeButton": true,
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "timeOut": "5000"
+                        };
+                        toastr.success("{{ success_message }}");
+                    });
+                </script>
                 {% endif %}
 
                 <div class="col-md-6">
@@ -40,7 +80,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label for="id_gobernador" class="form-label">Gobernador (ID Persona)</label>
+                    <label for="id_gobernador" class="form-label">Gobernador</label>
                     <select id="id_gobernador" name="id_gobernador" class="form-select">
                         <option value="">Seleccionar</option>
                         {% for persona in personas %}
@@ -49,11 +89,10 @@
                     </select>
                 </div>
 
-                <div class="col-12">
+                <div class="col-12 d-flex justify-content-between">
                     <a href="/" class="btn btn-secondary">Regresar</a>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
-
             </form>
         </div>
     </main>

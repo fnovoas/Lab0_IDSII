@@ -9,16 +9,16 @@ app = Flask(__name__ , template_folder="templates")
 # app.secret_key = "Lab06"
 
 # # Configuración de la conexión a la base de datos MySQL
-app.config['MYSQL_HOST'] = 'Lab0.mysql.pythonanywhere-services.com'
-app.config['MYSQL_USER'] = 'Lab0'
-app.config['MYSQL_PASSWORD'] = 'zaikodo321'
-app.config['MYSQL_DB'] = 'Lab0$default'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-# app.config['MYSQL_HOST'] = 'localhost'
-# app.config['MYSQL_USER'] = 'root'
-# app.config['MYSQL_PASSWORD'] = 'root'
-# app.config['MYSQL_DB'] = 'mydb'
+# app.config['MYSQL_HOST'] = 'Lab0.mysql.pythonanywhere-services.com'
+# app.config['MYSQL_USER'] = 'Lab0'
+# app.config['MYSQL_PASSWORD'] = 'zaikodo321'
+# app.config['MYSQL_DB'] = 'Lab0$default'
 # app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '1234'
+app.config['MYSQL_DB'] = 'Lab0'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # # Inicialización de la extensión MySQL
 mysql = MySQL(app)
 
