@@ -8,13 +8,17 @@ app = Flask(__name__ , template_folder="templates")
 
 # app.secret_key = "Lab06"
 
-# Configuración de la conexión a la base de datos MySQL
+# # Configuración de la conexión a la base de datos MySQL
 app.config['MYSQL_HOST'] = 'Lab0.mysql.pythonanywhere-services.com'
 app.config['MYSQL_USER'] = 'Lab0'
 app.config['MYSQL_PASSWORD'] = 'zaikodo321'
 app.config['MYSQL_DB'] = 'Lab0$default'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = 'root'
+# app.config['MYSQL_DB'] = 'mydb'
+# app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # # Inicialización de la extensión MySQL
 mysql = MySQL(app)
 
@@ -58,33 +62,55 @@ def elimina_empleado(id_persona):
 @app.route('/nuevo', methods=['GET', 'POST'])
 def nuevo():
     cursor = mysql.connection.cursor()
+    error_message = None
+    success_message = None
+    form_data = {}
 
     if request.method == 'POST':
-        # Capturar los datos del formulario
-        dni = request.form['dni']
-        id_tipo_documento = request.form['id_tipo_documento']
-        nombre1 = request.form['nombre1']
-        nombre2 = request.form['nombre2']
-        apellido1 = request.form['apellido1']
-        apellido2 = request.form['apellido2']
-        id_residencia = request.form['id_residencia']
-        mayor_de_edad = bool(int(request.form['mayor_de_edad']))
-        id_cabeza_familia = request.form['id_cabeza_familia'] or None
+        form_data = {
+            'dni': request.form['dni'],
+            'id_tipo_documento': request.form['id_tipo_documento'],
+            'nombre1': request.form['nombre1'],
+            'nombre2': request.form['nombre2'],
+            'apellido1': request.form['apellido1'],
+            'apellido2': request.form['apellido2'],
+            'id_residencia': request.form['id_residencia'],
+            'mayor_de_edad': request.form['mayor_de_edad'],
+            'id_cabeza_familia': request.form['id_cabeza_familia'] or None
+        }
 
-        # Insertar el nuevo registro en la tabla PERSONA
-        cursor.execute(
-            """
-            INSERT INTO PERSONA (id_tipo_documento, dni, nombre1, nombre2, apellido1, apellido2, mayor_de_edad, id_cabeza_familia, id_residencia)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """,
-            (id_tipo_documento, dni, nombre1, nombre2, apellido1, apellido2, mayor_de_edad, id_cabeza_familia, id_residencia)
-        )
+        dni = form_data['dni']
+        id_tipo_documento = form_data['id_tipo_documento']
+        mayor_de_edad = bool(int(form_data['mayor_de_edad']))
 
-        mysql.connection.commit()
-        cursor.close()
-        return redirect(url_for('index'))
+        if not dni.isdigit() or int(dni) < 0 or len(dni) < 5:
+            error_message = "El número de cédula debe ser positivo y tener al menos 5 dígitos."
+        elif mayor_de_edad and id_tipo_documento == "2":
+            error_message = "No se puede seleccionar 'Tarjeta de Identidad' para mayores de edad."
+        elif not mayor_de_edad and id_tipo_documento == "1":
+            error_message = "No se puede seleccionar 'Cédula de Ciudadanía' para menores de edad."
+        else:
+            cursor.execute(
+                """
+                INSERT INTO PERSONA (id_tipo_documento, dni, nombre1, nombre2, apellido1, apellido2, mayor_de_edad, id_cabeza_familia, id_residencia)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    id_tipo_documento,
+                    dni,
+                    form_data['nombre1'],
+                    form_data['nombre2'],
+                    form_data['apellido1'],
+                    form_data['apellido2'],
+                    mayor_de_edad,
+                    form_data['id_cabeza_familia'],
+                    form_data['id_residencia']
+                )
+            )
+            mysql.connection.commit()
+            success_message = "Persona creada exitosamente."
+            form_data = {}
 
-    # Obtener los datos necesarios para renderizar el formulario
     cursor.execute("SELECT * FROM TIPO_DOCUMENTO")
     tipos_documento = cursor.fetchall()
 
@@ -95,7 +121,16 @@ def nuevo():
     personas = cursor.fetchall()
 
     cursor.close()
-    return render_template('nuevo.html', tipos_documento=tipos_documento, viviendas=viviendas, personas=personas)
+    return render_template(
+        'nuevo.html',
+        tipos_documento=tipos_documento,
+        viviendas=viviendas,
+        personas=personas,
+        error_message=error_message,
+        success_message=success_message,
+        form_data=form_data
+    )
+
 
 
 
@@ -145,6 +180,7 @@ def editar_empleado(id_persona):
 @app.route('/nuevo_departamento', methods=['GET', 'POST'])
 def nuevo_departamento():
     cursor = mysql.connection.cursor()
+    success_message = None
 
     if request.method == 'POST':
         # Capturar los datos del formulario
@@ -161,8 +197,10 @@ def nuevo_departamento():
         )
 
         mysql.connection.commit()
+        success_message = f"Departamento '{nombre_departamento}' creado exitosamente."
         cursor.close()
-        return redirect(url_for('ver_departamentos'))
+        print(success_message)
+        return render_template('departamento.html', personas=[], success_message=success_message)
 
     # Obtener la lista de personas para asignar como gobernador
     cursor.execute("SELECT id_persona, nombre1, apellido1 FROM PERSONA")
