@@ -9,16 +9,16 @@ app = Flask(__name__ , template_folder="templates")
 # app.secret_key = "Lab06"
 
 # # Configuración de la conexión a la base de datos MySQL
-app.config['MYSQL_HOST'] = 'Lab0.mysql.pythonanywhere-services.com'
-app.config['MYSQL_USER'] = 'Lab0'
-app.config['MYSQL_PASSWORD'] = 'zaikodo321'
-app.config['MYSQL_DB'] = 'Lab0$default'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-# app.config['MYSQL_HOST'] = 'localhost'
-# app.config['MYSQL_USER'] = 'root'
-# app.config['MYSQL_PASSWORD'] = 'root'
-# app.config['MYSQL_DB'] = 'mydb'
+# app.config['MYSQL_HOST'] = 'Lab0.mysql.pythonanywhere-services.com'
+# app.config['MYSQL_USER'] = 'Lab0'
+# app.config['MYSQL_PASSWORD'] = 'zaikodo321'
+# app.config['MYSQL_DB'] = 'Lab0$default'
 # app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '1234'
+app.config['MYSQL_DB'] = 'Lab0'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # # Inicialización de la extensión MySQL
 mysql = MySQL(app)
 
@@ -29,7 +29,7 @@ def hola():
 @app.route('/')
 def index():
     cursor = mysql.connection.cursor()
-    cursor.execute("""
+    cursor.execute("""  
         SELECT
             p.id_persona,
             p.nombre1,
@@ -85,9 +85,9 @@ def nuevo():
 
         if not dni.isdigit() or int(dni) < 0 or len(dni) < 5:
             error_message = "El número de cédula debe ser positivo y tener al menos 5 dígitos."
-        elif mayor_de_edad and id_tipo_documento == "2":
+        elif mayor_de_edad and id_tipo_documento == "1":
             error_message = "No se puede seleccionar 'Tarjeta de Identidad' para mayores de edad."
-        elif not mayor_de_edad and id_tipo_documento == "1":
+        elif not mayor_de_edad and id_tipo_documento == "2":
             error_message = "No se puede seleccionar 'Cédula de Ciudadanía' para menores de edad."
         else:
             cursor.execute(

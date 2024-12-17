@@ -2,6 +2,19 @@
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
 
-main>.container {
-    padding: 20px 30px 0;
+.btn-custom {
+    background-color: #90d082;
+    color: white; /* Color del texto */
 }
+
+.btn-success {
+    background-color: #90d082 !important;
+    border-color: #90d082 !important;
+    color: white !important;
+}
+
+.btn-success:hover {
+    background-color: #76b86d !important;
+    border-color: #76b86d !important;
+}
+
