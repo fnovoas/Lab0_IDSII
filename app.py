@@ -29,7 +29,7 @@ def hola():
 @app.route('/')
 def index():
     cursor = mysql.connection.cursor()
-    cursor.execute("""
+    cursor.execute("""  
         SELECT
             p.id_persona,
             p.nombre1,
@@ -85,9 +85,9 @@ def nuevo():
 
         if not dni.isdigit() or int(dni) < 0 or len(dni) < 5:
             error_message = "El número de cédula debe ser positivo y tener al menos 5 dígitos."
-        elif mayor_de_edad and id_tipo_documento == "2":
+        elif mayor_de_edad and id_tipo_documento == "1":
             error_message = "No se puede seleccionar 'Tarjeta de Identidad' para mayores de edad."
-        elif not mayor_de_edad and id_tipo_documento == "1":
+        elif not mayor_de_edad and id_tipo_documento == "2":
             error_message = "No se puede seleccionar 'Cédula de Ciudadanía' para menores de edad."
         else:
             cursor.execute(
