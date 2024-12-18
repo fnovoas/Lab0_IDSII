@@ -7,6 +7,8 @@
     <title>Municipios</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     
     <style>
         body {
@@ -54,6 +56,21 @@
         <div class="container">
             <h3 class="my-3" style="color: #4caf83">Municipios</h3>
             <a href="/nuevo_municipio" class="btn btn-info" style="background-color: #BBEBD6; color: #131A29; border-color: #BBEBD6;">Agregar Municipio</a>
+            <!-- Toast para errores -->
+            {% if error_message %}
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div class="toast show bg-danger text-white" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Error</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        {{ error_message }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             <table class="table table-hover table-bordered my-3">
                 <thead class="table-dark">
                     <tr>
