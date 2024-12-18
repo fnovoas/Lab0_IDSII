@@ -448,21 +448,9 @@ def editar_municipio(id_municipio):
     cursor.close()
     return render_template('editar_municipio.html', municipio=municipio, departamentos=departamentos)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@app.route('/conocenos', methods=['GET'])
+def conocenos():
+    return render_template('conocenos.html')
+#####
 if __name__ == '__main__':
     app.run(debug=True)
