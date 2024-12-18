@@ -451,6 +451,9 @@ def editar_municipio(id_municipio):
 @app.route('/conocenos', methods=['GET'])
 def conocenos():
     return render_template('conocenos.html')
+@app.route('/politica', methods=['GET'])
+def politica():
+    return render_template('politica.html')
 #####
 if __name__ == '__main__':
     app.run(debug=True)
