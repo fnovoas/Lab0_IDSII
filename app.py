@@ -171,10 +171,13 @@ def editar_empleado(id_persona):
     cursor.execute("SELECT * FROM TIPO_DOCUMENTO")
     tipos_documento = cursor.fetchall()
 
+    # Obtener las residencias disponibles
+    cursor.execute("SELECT id_vivienda, direccion FROM VIVIENDA")
+    residencias = cursor.fetchall()
+
     cursor.close()
 
-    return render_template('edita.html', empleado=empleado, tipos_documento=tipos_documento)
-
+    return render_template('edita.html', empleado=empleado, tipos_documento=tipos_documento, residencias=residencias)
 
 
 @app.route('/nuevo_departamento', methods=['GET', 'POST'])
