@@ -118,7 +118,11 @@
                 </div>
                 <div class="col-md-4">
                     <label for="id_residencia" class="form-label">Residencia</label>
-                    <input type="text" class="form-control" id="id_residencia" name="id_residencia" value="{{ empleado['id_residencia'] }}" required>
+                    <select id="id_residencia" name="id_residencia" class="form-select" required>
+                        {% for residencia in residencias %}
+                        <option value="{{ residencia['id_vivienda'] }}" {% if residencia['id_vivienda'] == empleado['id_residencia'] %}selected{% endif %}> {{ residencia['direccion'] }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label for="id_tipo_documento" class="form-label">Tipo de Documento</label>
