@@ -282,17 +282,18 @@ def ver_departamentos():
     cursor = mysql.connection.cursor()
 
     # Consultar los departamentos y sus gobernadores
-    cursor.execute(
-        """
+    cursor.execute("""
         SELECT d.id_departamento, d.nombre_departamento, p.nombre1, p.apellido1
         FROM DEPARTAMENTO d
         LEFT JOIN PERSONA p ON d.id_gobernador = p.id_persona
-        """
-    )
+    """)
     departamentos = cursor.fetchall()
-
     cursor.close()
-    return render_template('ver_departamentos.html', departamentos=departamentos)
+
+    # Obtener el mensaje de error si está presente en la URL
+    error_message = request.args.get('error_message')
+
+    return render_template('ver_departamentos.html', departamentos=departamentos, error_message=error_message)
 
 @app.route('/ver_viviendas', methods=['GET'])
 def ver_viviendas():
@@ -420,16 +421,19 @@ def eliminar_municipios(id_municipio):
 @app.route('/eliminar_departamento/<int:id_departamento>', methods=['POST'])
 def eliminar_departamento(id_departamento):
     cursor = mysql.connection.cursor()
+    error_message = None
 
     try:
-        # Eliminar el departamento de la base de datos
+        # Intentar eliminar el departamento
         cursor.execute("DELETE FROM DEPARTAMENTO WHERE id_departamento = %s", (id_departamento,))
         mysql.connection.commit()
-    except Exception as e:
-        error_message = f"No se puede eliminar el departamento ya que está enlazado a un municipio"
+    except Exception:
+        # Establecer el mensaje de error
+        error_message = "No se puede eliminar el departamento ya que está enlazado a un municipio."
     finally:
         cursor.close()
 
+    # Redirigir con el mensaje de error si ocurre
     if error_message:
         return redirect(url_for('ver_departamentos', error_message=error_message))
     else:
