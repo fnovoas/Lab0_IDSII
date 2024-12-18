@@ -86,31 +86,35 @@ def nuevo():
 
         if not dni.isdigit() or int(dni) < 0 or len(dni) < 5:
             error_message = "El número de cédula debe ser positivo y tener al menos 5 dígitos."
-        elif mayor_de_edad and id_tipo_documento == "1":
+        if mayor_de_edad and id_tipo_documento == "2":
             error_message = "No se puede seleccionar 'Tarjeta de Identidad' para mayores de edad."
-        elif not mayor_de_edad and id_tipo_documento == "2":
+        if not mayor_de_edad and id_tipo_documento == "1":
             error_message = "No se puede seleccionar 'Cédula de Ciudadanía' para menores de edad."
-        else:
-            cursor.execute(
-                """
-                INSERT INTO PERSONA (id_tipo_documento, dni, nombre1, nombre2, apellido1, apellido2, mayor_de_edad, id_cabeza_familia, id_residencia)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """,
-                (
-                    id_tipo_documento,
-                    dni,
-                    form_data['nombre1'],
-                    form_data['nombre2'],
-                    form_data['apellido1'],
-                    form_data['apellido2'],
-                    mayor_de_edad,
-                    form_data['id_cabeza_familia'],
-                    form_data['id_residencia']
+        
+        if not error_message:
+            try:
+                cursor.execute(
+                    """
+                    INSERT INTO PERSONA (id_tipo_documento, dni, nombre1, nombre2, apellido1, apellido2, mayor_de_edad, id_cabeza_familia, id_residencia)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (
+                        id_tipo_documento,
+                        dni,
+                        form_data['nombre1'],
+                        form_data['nombre2'],
+                        form_data['apellido1'],
+                        form_data['apellido2'],
+                        mayor_de_edad,
+                        form_data['id_cabeza_familia'],
+                        form_data['id_residencia']
+                    )
                 )
-            )
-            mysql.connection.commit()
-            success_message = "Persona creada exitosamente."
-            form_data = {}
+                mysql.connection.commit()
+                success_message = "Persona creada exitosamente."
+                form_data = {}
+            except IntegrityError as e:
+                error_message = "Ya existe una persona con el mismo número de cédula."
 
     cursor.execute("SELECT * FROM TIPO_DOCUMENTO")
     tipos_documento = cursor.fetchall()
@@ -184,6 +188,7 @@ def editar_empleado(id_persona):
 @app.route('/nuevo_departamento', methods=['GET', 'POST'])
 def nuevo_departamento():
     cursor = mysql.connection.cursor()
+    error_messages = []
     success_message = None
 
     if request.method == 'POST':
@@ -191,20 +196,28 @@ def nuevo_departamento():
         nombre_departamento = request.form['nombre_departamento']
         id_gobernador = request.form['id_gobernador'] or None
 
-        # Insertar el nuevo departamento en la base de datos
-        cursor.execute(
-            """
-            INSERT INTO DEPARTAMENTO (nombre_departamento, id_gobernador)
-            VALUES (%s, %s)
-            """,
-            (nombre_departamento, id_gobernador)
-        )
-
-        mysql.connection.commit()
-        success_message = f"Departamento '{nombre_departamento}' creado exitosamente."
+        if not error_messages:
+            try:
+                # Insertar el nuevo departamento en la base de datos
+                cursor.execute(
+                    """
+                    INSERT INTO DEPARTAMENTO (nombre_departamento, id_gobernador)
+                    VALUES (%s, %s)
+                    """,
+                    (nombre_departamento, id_gobernador)
+                )
+                mysql.connection.commit()
+                success_message = f"Departamento '{nombre_departamento}' creado exitosamente."
+            except IntegrityError as e:
+                if "nombre_departamento" in str(e):
+                    error_messages.append(f"El departamento '{nombre_departamento}' ya existe en la base de datos.")
+                if "unique_gobernador" in str(e):
+                    error_messages.append("La persona seleccionada ya es gobernador de otro departamento.")
+        
+        cursor.execute("SELECT id_persona, nombre1, apellido1 FROM PERSONA")
+        personas = cursor.fetchall()
         cursor.close()
-        print(success_message)
-        return render_template('departamento.html', personas=[], success_message=success_message)
+        return render_template('departamento.html', personas=personas, success_message=success_message, error_message=" ".join(error_messages) if error_messages else None)
 
     # Obtener la lista de personas para asignar como gobernador
     cursor.execute("SELECT id_persona, nombre1, apellido1 FROM PERSONA")

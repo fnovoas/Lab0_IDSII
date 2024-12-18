@@ -60,6 +60,12 @@
             <h3 class="my-3">Agregar Departamento</h3>
 
             <form action="/nuevo_departamento" method="post" class="row g-3" autocomplete="off">
+                {% if error_message %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error_message }}
+                </div>
+                {% endif %}
+                
                 {% if success_message %}
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
@@ -73,6 +79,8 @@
                     });
                 </script>
                 {% endif %}
+
+
 
                 <div class="col-md-6">
                     <label for="nombre_departamento" class="form-label">Nombre del Departamento</label>

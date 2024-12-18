@@ -45,6 +45,7 @@ CREATE TABLE `DEPARTAMENTO` (
   `id_gobernador` int unsigned DEFAULT NULL,
   PRIMARY KEY (`id_departamento`),
   UNIQUE KEY `unique_gobernador` (`id_gobernador`),
+  UNIQUE KEY (nombre_departamento),
   CONSTRAINT `fk_departamento_gobernador` FOREIGN KEY (`id_gobernador`) REFERENCES `PERSONA` (`id_persona`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -105,6 +106,7 @@ CREATE TABLE `PERSONA` (
   `id_cabeza_familia` int unsigned DEFAULT NULL,
   `id_residencia` int unsigned NOT NULL,
   PRIMARY KEY (`id_persona`),
+  UNIQUE KEY (dni),
   KEY `fk_persona_tipo_documento` (`id_tipo_documento`),
   KEY `fk_persona_cabeza_familia` (`id_cabeza_familia`),
   KEY `fk_persona_residencia` (`id_residencia`),
@@ -122,7 +124,7 @@ CREATE TABLE `PERSONA` (
 
 LOCK TABLES `PERSONA` WRITE;
 /*!40000 ALTER TABLE `PERSONA` DISABLE KEYS */;
-INSERT INTO `PERSONA` VALUES (10,1,'1236545','John','Andres','Rua','Cortes',1,NULL,1),(12,1,'12365452','Hernando','','Rodriguez','Gonzalez',1,10,2),(14,1,'1','Fabio','','a','',1,NULL,2),(15,2,'1','Fabio','','2','',0,14,1);
+INSERT INTO `PERSONA` VALUES (10,1,'1236545','John','Andres','Rua','Cortes',1,NULL,1),(12,1,'12365452','Hernando','','Rodriguez','Gonzalez',1,10,2),(14,1,'1','Fabio','','a','',1,NULL,2),(15,2,'12','Fabio','','2','',0,14,1);
 /*!40000 ALTER TABLE `PERSONA` ENABLE KEYS */;
 UNLOCK TABLES;
 
