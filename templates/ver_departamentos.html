@@ -52,14 +52,14 @@
 <body class="d-flex flex-column h-100">
     <main class="flex-shrink-0">
         <div class="container">
-            <h3 class="my-3" style="color: #4caf83">Lista de Departamentos</h3>
+            <h3 class="my-3" style="color: #4caf83">Lista de departamentos</h3>
             <a href="/nuevo_departamento" class="btn btn-primary" style="background-color: #BBEBD6; color: #131A29; border-color: #BBEBD6;">Agregar Departamento</a>
 
             <table class="table table-hover table-bordered my-3">
                 <thead class="table-dark">
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">Nombre del Departamento</th>
+                        <th scope="col">Nombre del departamento</th>
                         <th scope="col">Gobernador</th>
                         <th scope="col">Opciones</th>
                     </tr>
@@ -73,7 +73,7 @@
                             {% if departamento['nombre1'] and departamento['apellido1'] %}
                                 {{ departamento['nombre1'] }} {{ departamento['apellido1'] }}
                             {% else %}
-                                Sin Gobernador
+                                Sin gobernador
                             {% endif %}
                         </td >
                         <td style="background-color: #131A29; color: #ffffff; border: 1px solid #4A4E51; border-bottom: 1px solid #4A4E51;">
