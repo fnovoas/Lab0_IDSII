@@ -3,6 +3,7 @@ from flask_mysqldb import MySQL
 from datetime import datetime, timedelta
 import os
 # from dotenv import load_dotenv
+from MySQLdb import IntegrityError
 
 app = Flask(__name__ , template_folder="templates")
 
@@ -245,17 +246,6 @@ def editar_departamento(id_departamento):
     return render_template('editar_departamento.html', departamento=departamento, personas=personas)
 
 
-@app.route('/eliminar_departamento/<int:id_departamento>', methods=['POST'])
-def eliminar_departamento(id_departamento):
-    cursor = mysql.connection.cursor()
-
-    # Eliminar el departamento de la base de datos
-    cursor.execute("DELETE FROM DEPARTAMENTO WHERE id_departamento = %s", (id_departamento,))
-
-    mysql.connection.commit()
-    cursor.close()
-
-    return redirect(url_for('ver_departamentos'))
 
 
 @app.route('/nuevo_municipio', methods=['GET', 'POST'])
@@ -401,18 +391,49 @@ def ver_municipios():
     """)
     municipios = cursor.fetchall()
     cursor.close()
-    return render_template('ver_municipios.html', municipios=municipios)
+    # Obtener el mensaje de error si está presente
+    error_message = request.args.get('error_message', None)
+
+    return render_template('ver_municipios.html', municipios=municipios,error_message=error_message)
 
 @app.route('/eliminar_municipios/<int:id_municipio>', methods=['POST'])
 def eliminar_municipios(id_municipio):
     cursor = mysql.connection.cursor()
+    error_message = None
 
-    # Eliminar el municipio de la base de datos
-    cursor.execute("DELETE FROM MUNICIPIO WHERE id_municipio = %s", (id_municipio,))
-    mysql.connection.commit()
-    cursor.close()
+    try:
+        # Intentar eliminar el municipio
+        cursor.execute("DELETE FROM MUNICIPIO WHERE id_municipio = %s", (id_municipio,))
+        mysql.connection.commit()
+    except Exception as e:
+        # Capturar el error y almacenar el mensaje
+        error_message = f"No se puede eliminar el municipio ya que está enlazado a una vivienda"
+    finally:
+        cursor.close()
 
-    return redirect(url_for('ver_municipios'))
+    # Redirigir con el mensaje de error si ocurre
+    if error_message:
+        return redirect(url_for('ver_municipios', error_message=error_message))
+    else:
+        return redirect(url_for('ver_municipios'))
+
+@app.route('/eliminar_departamento/<int:id_departamento>', methods=['POST'])
+def eliminar_departamento(id_departamento):
+    cursor = mysql.connection.cursor()
+
+    try:
+        # Eliminar el departamento de la base de datos
+        cursor.execute("DELETE FROM DEPARTAMENTO WHERE id_departamento = %s", (id_departamento,))
+        mysql.connection.commit()
+    except Exception as e:
+        error_message = f"No se puede eliminar el departamento ya que está enlazado a un municipio"
+    finally:
+        cursor.close()
+
+    if error_message:
+        return redirect(url_for('ver_departamentos', error_message=error_message))
+    else:
+        return redirect(url_for('ver_departamentos'))
 
 @app.route('/editar_municipio/<int:id_municipio>', methods=['GET', 'POST'])
 def editar_municipio(id_municipio):
