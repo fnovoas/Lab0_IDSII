@@ -17,8 +17,8 @@ app = Flask(__name__ , template_folder="templates")
 # app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '1234'
-app.config['MYSQL_DB'] = 'Lab0'
+app.config['MYSQL_PASSWORD'] = 'Cate2411+'
+app.config['MYSQL_DB'] = 'mydb'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # # Inicialización de la extensión MySQL
 mysql = MySQL(app)

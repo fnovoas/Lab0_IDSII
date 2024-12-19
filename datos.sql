@@ -111,7 +111,6 @@ CREATE TABLE `PERSONA` (
   KEY `fk_persona_cabeza_familia` (`id_cabeza_familia`),
   KEY `fk_persona_residencia` (`id_residencia`),
   CONSTRAINT `fk_persona_cabeza_familia` FOREIGN KEY (`id_cabeza_familia`) REFERENCES `PERSONA` (`id_persona`),
-  CONSTRAINT `fk_persona_recidencia` FOREIGN KEY (`id_residencia`) REFERENCES `VIVIENDA` (`id_vivienda`),
   CONSTRAINT `fk_persona_residencia` FOREIGN KEY (`id_residencia`) REFERENCES `VIVIENDA` (`id_vivienda`),
   CONSTRAINT `fk_persona_tipo_documento` FOREIGN KEY (`id_tipo_documento`) REFERENCES `TIPO_DOCUMENTO` (`id_tipo_documento`),
   CONSTRAINT `chk_tipo_documento_validacion` CHECK ((`id_tipo_documento` in (1,2)))
@@ -217,3 +216,37 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2024-12-16 23:17:13
+
+
+ALTER TABLE PERSONA 
+MODIFY COLUMN id_residencia INT UNSIGNED DEFAULT NULL;
+
+ALTER TABLE PERSONA 
+DROP FOREIGN KEY fk_persona_residencia;
+
+ALTER TABLE PERSONA 
+ADD CONSTRAINT fk_persona_residencia
+FOREIGN KEY (id_residencia) REFERENCES VIVIENDA(id_vivienda)
+ON DELETE SET NULL;
+
+-- Eliminar la clave foránea existente con el nombre 'fk_persona_residencia'
+ALTER TABLE PERSONA 
+DROP FOREIGN KEY fk_persona_residencia;
+
+-- Eliminar la clave foránea 'fk_persona_cabeza_familia' para redefinirla
+ALTER TABLE PERSONA 
+DROP FOREIGN KEY fk_persona_cabeza_familia;
+
+-- Modificar la columna 'id_residencia' para permitir valores NULL
+ALTER TABLE PERSONA 
+MODIFY COLUMN id_residencia INT UNSIGNED DEFAULT NULL;
+
+-- Eliminar la clave foránea existente
+ALTER TABLE DEPARTAMENTO 
+DROP FOREIGN KEY fk_departamento_gobernador;
+
+-- Agregar una nueva clave foránea con la acción deseada
+ALTER TABLE DEPARTAMENTO 
+ADD CONSTRAINT fk_departamento_gobernador
+FOREIGN KEY (id_gobernador) REFERENCES PERSONA (id_persona)
+ON DELETE SET NULL;
