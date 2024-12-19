@@ -86,9 +86,9 @@ def nuevo():
 
         if not dni.isdigit() or int(dni) < 0 or len(dni) < 5:
             error_message = "El número de cédula debe ser positivo y tener al menos 5 dígitos."
-        if mayor_de_edad and id_tipo_documento == "1":
+        if mayor_de_edad and id_tipo_documento == "2":
             error_message = "No se puede seleccionar 'Tarjeta de Identidad' para mayores de edad."
-        if not mayor_de_edad and id_tipo_documento == "2":
+        if not mayor_de_edad and id_tipo_documento == "1":
             error_message = "No se puede seleccionar 'Cédula de Ciudadanía' para menores de edad."
         
         if not error_message:
@@ -155,9 +155,9 @@ def editar_empleado(id_persona):
         mayor_de_edad = bool(int(request.form['mayor_de_edad']))
 
         # Validaciones
-        if mayor_de_edad and id_tipo_documento == "1":
+        if mayor_de_edad and id_tipo_documento == "2":
             error_message = "No se puede seleccionar 'Tarjeta de Identidad' para mayores de edad."
-        elif not mayor_de_edad and id_tipo_documento == "2":
+        elif not mayor_de_edad and id_tipo_documento == "1":
             error_message = "No se puede seleccionar 'Cédula de Ciudadanía' para menores de edad."
         else:
             # Actualizar los datos en la base de datos
