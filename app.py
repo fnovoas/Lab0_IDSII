@@ -17,7 +17,7 @@ app = Flask(__name__ , template_folder="templates")
 # app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Cate2411+'
+app.config['MYSQL_PASSWORD'] = 'root'
 app.config['MYSQL_DB'] = 'mydb'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # # Inicialización de la extensión MySQL
@@ -86,9 +86,9 @@ def nuevo():
 
         if not dni.isdigit() or int(dni) < 0 or len(dni) < 5:
             error_message = "El número de cédula debe ser positivo y tener al menos 5 dígitos."
-        if mayor_de_edad and id_tipo_documento == "2":
+        if mayor_de_edad and id_tipo_documento == "1":
             error_message = "No se puede seleccionar 'Tarjeta de Identidad' para mayores de edad."
-        if not mayor_de_edad and id_tipo_documento == "1":
+        if not mayor_de_edad and id_tipo_documento == "2":
             error_message = "No se puede seleccionar 'Cédula de Ciudadanía' para menores de edad."
         
         if not error_message:
