@@ -74,24 +74,39 @@
             <h3 class="my-3" style="color: #4caf83">Editar Empleado</h3>
 
             <form action="/editar/{{ empleado['id_persona'] }}" method="post" class="row g-3">
-                {% if error_message %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error_message }}
-                </div>
-                {% endif %}
-                {% if success_message %}
-                <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                        toastr.options = {
-                            "closeButton": true,
-                            "progressBar": true,
-                            "positionClass": "toast-top-right",
-                            "timeOut": "5000"
-                        };
-                        toastr.success("{{ success_message }}");
-                    });
-                </script>
-                {% endif %}
+            <!-- Mensajes dinámicos -->
+            {% if error_message %}
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    toastr.options = {
+                        "closeButton": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "timeOut": "5000",
+                        "extendedTimeOut": "1000",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
+                    toastr.error("{{ error_message }}");
+                });
+            </script>
+            {% endif %}
+            {% if success_message %}
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    toastr.options = {
+                        "closeButton": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "timeOut": "5000",
+                        "extendedTimeOut": "1000",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
+                    toastr.success("{{ success_message }}");
+                });
+            </script>
+            {% endif %}
                 <div class="col-md-4">
                     <label for="id_persona" class="form-label">Clave</label>
                     <input type="text" class="form-control" id="id_persona" name="id_persona" value="{{ empleado['id_persona'] }}" readonly>

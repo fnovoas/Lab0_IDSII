@@ -137,11 +137,11 @@ def nuevo():
     )
 
 
-
-
 @app.route('/editar/<int:id_persona>', methods=['GET', 'POST'])
 def editar_empleado(id_persona):
     cursor = mysql.connection.cursor()
+    error_message = None
+    success_message = None
 
     if request.method == 'POST':
         # Capturar los datos del formulario
@@ -152,21 +152,32 @@ def editar_empleado(id_persona):
         apellido2 = request.form['apellido2']
         id_residencia = request.form['id_residencia']
         id_tipo_documento = request.form['id_tipo_documento']
-        mayor_de_edad = request.form['mayor_de_edad']
+        mayor_de_edad = bool(int(request.form['mayor_de_edad']))
 
-        # Actualizar los datos en la base de datos
-        cursor.execute("""
-            UPDATE PERSONA
-            SET dni = %s, nombre1 = %s, nombre2 = %s, apellido1 = %s, apellido2 = %s,
-                id_residencia = %s, id_tipo_documento = %s, mayor_de_edad = %s
-            WHERE id_persona = %s
-        """, (dni, nombre1, nombre2, apellido1, apellido2, id_residencia, id_tipo_documento, mayor_de_edad, id_persona))
+        # Validaciones
+        if mayor_de_edad and id_tipo_documento == "1":
+            error_message = "No se puede seleccionar 'Tarjeta de Identidad' para mayores de edad."
+        elif not mayor_de_edad and id_tipo_documento == "2":
+            error_message = "No se puede seleccionar 'Cédula de Ciudadanía' para menores de edad."
+        else:
+            # Actualizar los datos en la base de datos
+            cursor.execute("""
+                UPDATE PERSONA
+                SET dni = %s, nombre1 = %s, nombre2 = %s, apellido1 = %s, apellido2 = %s,
+                    id_residencia = %s, id_tipo_documento = %s, mayor_de_edad = %s
+                WHERE id_persona = %s
+            """, (dni, nombre1, nombre2, apellido1, apellido2, id_residencia, id_tipo_documento, mayor_de_edad, id_persona))
+            mysql.connection.commit()
+            success_message = "Cambios guardados exitosamente."
 
-        mysql.connection.commit()
         cursor.close()
 
-        # Redirigir al índice después de guardar los cambios
-        return redirect(url_for('index'))
+        # Si hay error, recargar el formulario con el mensaje
+        if error_message:
+            return redirect(url_for('editar_empleado', id_persona=id_persona, error_message=error_message))
+
+        # Si no hay error, redirigir al índice con mensaje de éxito
+        return redirect(url_for('index', success_message=success_message))
 
     # Obtener los datos del empleado para prellenar el formulario
     cursor.execute("SELECT * FROM PERSONA WHERE id_persona = %s", (id_persona,))
@@ -182,7 +193,18 @@ def editar_empleado(id_persona):
 
     cursor.close()
 
-    return render_template('edita.html', empleado=empleado, tipos_documento=tipos_documento, residencias=residencias)
+    # Obtener mensajes de error o éxito de la solicitud
+    error_message = request.args.get('error_message', None)
+    success_message = request.args.get('success_message', None)
+
+    return render_template(
+        'edita.html',
+        empleado=empleado,
+        tipos_documento=tipos_documento,
+        residencias=residencias,
+        error_message=error_message,
+        success_message=success_message
+    )
 
 
 @app.route('/nuevo_departamento', methods=['GET', 'POST'])
