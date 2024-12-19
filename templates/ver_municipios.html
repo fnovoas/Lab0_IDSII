@@ -88,14 +88,14 @@
                 <tbody>
                     {% for municipio in municipios %}
                     <tr>
-                        <td>{{ municipio['id_municipio'] }}</td>
-                        <td>{{ municipio['nombre_municipio'] }}</td>
-                        <td>{{ municipio['nombre_departamento'] }}</td>
-                        <td>
+                        
+                        <td style="background-color: #131A29; color: #ffffff; border: 1px solid #4A4E51; border-bottom: 1px solid #4A4E51;">{{ municipio['id_municipio'] }}</td>
+                        <td style="background-color: #131A29; color: #ffffff; border: 1px solid #4A4E51; border-bottom: 1px solid #4A4E51;">{{ municipio['nombre_municipio'] }}</td>
+                        <td style="background-color: #131A29; color: #ffffff; border: 1px solid #4A4E51; border-bottom: 1px solid #4A4E51;">{{ municipio['nombre_departamento'] }}</td>
+                        <td style="background-color: #131A29; color: #ffffff; border: 1px solid #4A4E51; border-bottom: 1px solid #4A4E51;">
                             <a href="/editar_municipio/{{ municipio['id_municipio'] }}" class="btn btn-warning btn-sm me-2">Editar</a>
                             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#eliminaModal" data-bs-id="{{ municipio['id_municipio'] }}">Eliminar</button>
-                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
